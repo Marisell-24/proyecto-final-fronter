@@ -32,47 +32,49 @@ let tareas = [
 const crearTarea = async (tarea) => {
     // enviar consulta a la API para crear una tarea
    // alert('tarea creada')
+    console.log(tarea)
+   await fetch('http://localhost:3000/api/v1/tareas', {
+    method: 'POST',
+    body: JSON.stringify(tarea)
+   })
 
-    tarea.estado = 'inactiva'
-    tareas.push(tarea)
+    /*tarea.estado = 'inactiva'
+    tareas.push(tarea)*/
 }
 
 const obtenerTareas = async () => {
     // enviar consulta a la API para obtener todas las tareas
+    const response = await fetch('http://localhost:3000/api/v1/tareas')
+    const data = await response.json()
 
-    return tareas
+    return data.data
+
+    // return tareas
 }
 
 const verTarea = async (id) => {
     // enviar consulta a la API para obtener la tarea con el id
     // alert('tarea obtenida')
-    const tareaEncontrada = tareas.find((tarea) =>{
-        if (id === tarea._id) {
-            return true
-        }
-        return false
-    })
 
-    if (tareaEncontrada) {
-        return tareaEncontrada
-    } else {
-        alert('tarea no encontrada')
-    }   
-}
+    const response = await fetch('http://localhost:3000/api/v1/tareas/' + id )
+    const data = await response.json()
+   
+    return data.data
 
-const editarTarea = async (id, tareaEditada) => {
+
+    //const editarTarea = async (id, tareaEditada) => {
     // enviar consulta a la API para obtener la tarea con el id
     //alert('tarea editada')
 
-   const listaTareasModificadas = tareas.map((tarea) =>{
-        if (id === tarea._id){
-            tareaEditada._id = id
-            return tareaEditada
-        }
-        return tarea
-    } )
+   //const listaTareasModificadas = tareas.map((tarea) =>{
+        //if (id === tarea._id){
+           // tareaEditada._id = id
+           // return tareaEditada
+       // }
+        //return tarea
+    //} )
 
-    tareas = listaTareasModificadas
+   // tareas = listaTareasModificadas
 }
     
 
@@ -87,7 +89,7 @@ const eliminarTarea = async (id) => {
         }
         return false
     })
-    
+
     tareas = tareasFiltradas
 }
 
