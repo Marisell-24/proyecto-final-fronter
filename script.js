@@ -1,3 +1,5 @@
+let estado = ''
+
 let tareas = [
     {
         "_id": "1",
@@ -35,7 +37,10 @@ const crearTarea = async (tarea) => {
     console.log(tarea)
    await fetch('http://localhost:3000/api/v1/tareas', {
     method: 'POST',
-    body: JSON.stringify(tarea)
+    body: JSON.stringify(tarea),
+    headers: {
+        'Content-Type': 'application/json'
+    }
    })
 
     /*tarea.estado = 'inactiva'
@@ -44,7 +49,12 @@ const crearTarea = async (tarea) => {
 
 const obtenerTareas = async () => {
     // enviar consulta a la API para obtener todas las tareas
-    const response = await fetch('http://localhost:3000/api/v1/tareas')
+
+    let query = ''
+    if (estado) {
+        query = '?estado=' + estado
+    }
+    const response = await fetch('http://localhost:3000/api/v1/tareas'+ query)
     const data = await response.json()
 
     return data.data
@@ -61,10 +71,20 @@ const verTarea = async (id) => {
    
     return data.data
 
+}
 
-    //const editarTarea = async (id, tareaEditada) => {
+    const editarTarea = async (id, tareaEditada) => {
     // enviar consulta a la API para obtener la tarea con el id
     //alert('tarea editada')
+
+    await fetch('http://localhost:3000/api/v1/tareas/' + id, {
+        method: 'PUT',
+        body: JSON.stringify(tareaEditada),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    
+    })
 
    //const listaTareasModificadas = tareas.map((tarea) =>{
         //if (id === tarea._id){
@@ -79,19 +99,24 @@ const verTarea = async (id) => {
     
 
 
+
 const eliminarTarea = async (id) => {
     // enviar consulta a la API para eliminar la tarea con el id
     // alert('tarea eliminada')
 
-    const tareasFiltradas = tareas.filter((tarea) => {
+    await fetch('http://localhost:3000/api/v1/tareas/' + id, {
+        method: 'DELETE'
+    })
+
+    /* const tareasFiltradas = tareas.filter((tarea) => {
         if (tarea._id !== id) {
             return true
         }
         return false
-    })
+    }) 
 
-    tareas = tareasFiltradas
-}
+    tareas = tareasFiltradas */
+} 
 
 // -----------------------  Renderizar tareas en el HTML -----------------------
 const listaTareas = document.getElementById('lista-tareas')
@@ -243,9 +268,13 @@ formCrearTarea.addEventListener('submit', async (event) => {
 })
 
 // -----------------------  Filtrar tareas por estado -----------------------
-let estado = ''
+
 const selectEstado = document.getElementById('select-estado')
 selectEstado.addEventListener('change', (e) => {
+    console.log(e.target.value)
+    estado = e.target.value
+
+    renderTareas()
 })
 
 window.addEventListener('load', renderTareas)
