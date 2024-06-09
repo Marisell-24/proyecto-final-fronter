@@ -33,18 +33,17 @@ let tareas = [
 
 const crearTarea = async (tarea) => {
     // enviar consulta a la API para crear una tarea
-   // alert('tarea creada')
-    console.log(tarea)
-   await fetch('http://localhost:3000/api/v1/tareas', {
-    method: 'POST',
-    body: JSON.stringify(tarea),
-    headers: {
-        'Content-Type': 'application/json'
-    }
-   })
+    // alert('tarea creada')
+    await fetch('https://proyecto-final-backend-seven.vercel.app/api/v1/tareas', {
+        method: 'POST',
+        body: JSON.stringify(tarea),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 
-    /*tarea.estado = 'inactiva'
-    tareas.push(tarea)*/
+    /* tarea.estado = 'inactiva'
+    tareas.push(tarea) */
 }
 
 const obtenerTareas = async () => {
@@ -54,7 +53,8 @@ const obtenerTareas = async () => {
     if (estado) {
         query = '?estado=' + estado
     }
-    const response = await fetch('http://localhost:3000/api/v1/tareas'+ query)
+
+    const response = await fetch('https://proyecto-final-backend-seven.vercel.app/api/v1/tareas' + query)
     const data = await response.json()
 
     return data.data
@@ -66,45 +66,55 @@ const verTarea = async (id) => {
     // enviar consulta a la API para obtener la tarea con el id
     // alert('tarea obtenida')
 
-    const response = await fetch('http://localhost:3000/api/v1/tareas/' + id )
+    const response = await fetch('https://proyecto-final-backend-seven.vercel.app/api/v1/tareas/' + id)
     const data = await response.json()
-   
+
     return data.data
 
+    /* const tareaEncontrada = tareas.find((tarea) => {
+        if (id === tarea._id) {
+            return true
+        }
+        return false
+    })
+
+    if (tareaEncontrada) {
+        return tareaEncontrada
+    } else {
+        alert('tarea no encontrada')
+    } */
 }
 
-    const editarTarea = async (id, tareaEditada) => {
+const editarTarea = async (id, tareaEditada) => {
     // enviar consulta a la API para obtener la tarea con el id
-    //alert('tarea editada')
+    // alert('tarea editada')
 
-    await fetch('http://localhost:3000/api/v1/tareas/' + id, {
+    await fetch('https://proyecto-final-backend-seven.vercel.app/api/v1/tareas/' + id, {
         method: 'PUT',
         body: JSON.stringify(tareaEditada),
         headers: {
             'Content-Type': 'application/json'
         }
-    
+    }) 
+
+    /* const listaTareasModificadas = tareas.map((tarea) => {
+        if (id === tarea._id) {
+            tareaEditada._id = id
+            return tareaEditada
+        }
+
+        return tarea
     })
 
-   //const listaTareasModificadas = tareas.map((tarea) =>{
-        //if (id === tarea._id){
-           // tareaEditada._id = id
-           // return tareaEditada
-       // }
-        //return tarea
-    //} )
-
-   // tareas = listaTareasModificadas
+    tareas = listaTareasModificadas */
 }
-    
-
 
 
 const eliminarTarea = async (id) => {
     // enviar consulta a la API para eliminar la tarea con el id
     // alert('tarea eliminada')
 
-    await fetch('http://localhost:3000/api/v1/tareas/' + id, {
+    await fetch('https://proyecto-final-backend-seven.vercel.app/api/v1/tareas/' + id, {
         method: 'DELETE'
     })
 
@@ -113,10 +123,10 @@ const eliminarTarea = async (id) => {
             return true
         }
         return false
-    }) 
+    })
 
     tareas = tareasFiltradas */
-} 
+}
 
 // -----------------------  Renderizar tareas en el HTML -----------------------
 const listaTareas = document.getElementById('lista-tareas')
@@ -183,9 +193,9 @@ const renderTareas = async () => {
 
             // desabilitar el boton
             buttonVerMas.disabled = true
-
         })
-        // --------- agregar evento click al boton editar-----
+
+        // ------- agregar evento click al boton editar
         buttonEditar.addEventListener('click', async () => {
             // console.log(tarea._id)
 
@@ -205,23 +215,28 @@ const renderTareas = async () => {
             inputEditarEstado.value = tareaObtenida.estado
 
             const formEditarTarea = document.getElementById('form-editar-tarea')
-            formEditarTarea.addEventListener('submit', async (event) =>{
+            formEditarTarea.addEventListener('submit', async (event) => {
                 event.preventDefault()
 
                 const data = Object.fromEntries(new FormData(event.target))
 
                 await editarTarea(tarea._id, data)
 
-                wrapperEditarTarea.style.display ="nome"
+                wrapperEditarTarea.style.display = 'none'
 
                 renderTareas()
+
             })
+
         })
-        //------- agregar evento click al boton eliminar------
-        buttonEliminar.addEventListener('click',async() =>{
+
+        // ------------ agregar evento click al boton eliminar -----------
+        buttonEliminar.addEventListener('click', async () => {
             await eliminarTarea(tarea._id)
             renderTareas()
         })
+
+
     })
 
 }
